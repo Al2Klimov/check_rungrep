@@ -3,7 +3,7 @@ mod cli;
 mod cnt_iter;
 mod usage;
 
-use std::env::args_os;
+use std::env::{args_os, set_current_dir};
 use std::process::exit;
 
 fn main() {
@@ -14,6 +14,16 @@ fn main() {
             exit(3);
         }
         Ok(todo) => {
+            for cd in todo.cd {
+                match set_current_dir(cd.as_os_str()) {
+                    Err(err) => {
+                        eprintln!("chdir(2): {}", err);
+                        exit(3);
+                    }
+                    Ok(_) => {}
+                }
+            }
+
             // TODO
         }
     }
