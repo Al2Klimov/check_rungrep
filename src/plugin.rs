@@ -1,7 +1,7 @@
 use nagios_range::NagiosRange;
 use std::cmp::max;
 use std::collections::BTreeMap;
-use std::fmt::Display;
+use std::fmt::{Display, Formatter};
 
 pub(crate) struct Check {
     state: State,
@@ -60,11 +60,79 @@ impl Check {
             self.perfdata.push(perfdata);
         }
     }
+
+    pub(crate) fn state(&self) -> State {
+        self.state.clone()
+    }
 }
 
 fn threshold_alert(value: f64, threshold: &Option<NagiosRange>) -> bool {
     match threshold {
         None => false,
         Some(range) => range.check(value),
+    }
+}
+
+impl Display for Check {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self.alerts.get(&self.state) {
+            None => {}
+            Some(alerts) => {
+                let li = match self.state {
+                    State::Ok => "✅",
+                    State::Warning => "⚠️",
+                    State::Critical => "🚨",
+                };
+
+                for alert in alerts {
+                    writeln!(f, "{} {}", li, alert)?;
+                }
+            }
+        }
+
+        if !self.perfdata.is_empty() {
+            write!(f, " |")?;
+
+            for perfdat in &self.perfdata {
+                write!(
+                    f,
+                    " '{}'={}{};{};{};{};{}",
+                    perfdat.thresholds.label.replace("'", "''"),
+                    perfdat.value,
+                    perfdat.uom,
+                    OptionDisplay {
+                        o: perfdat.thresholds.thresholds.warn
+                    },
+                    OptionDisplay {
+                        o: perfdat.thresholds.thresholds.crit
+                    },
+                    OptionDisplay { o: perfdat.min },
+                    OptionDisplay { o: perfdat.max }
+                )?;
+            }
+
+            writeln!(f)?;
+        }
+
+        Ok(())
+    }
+}
+
+struct OptionDisplay<T>
+where
+    T: Display,
+{
+    o: Option<T>,
+}
+
+impl<T> Display for OptionDisplay<T>
+where
+    T: Display,
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match &self.o {
+            None => Ok(()),
+            Some(v) => v.fmt(f),
+        }
     }
 }

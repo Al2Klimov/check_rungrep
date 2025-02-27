@@ -12,6 +12,8 @@ use alerts::{ExecTime, ExitCode, Matches};
 use memchr::memmem::find_iter;
 use plugin::{Perfdat, Perfdata, State};
 use std::env::{args_os, set_current_dir, var_os};
+use std::io;
+use std::io::Write;
 use std::process::exit;
 
 fn main() {
@@ -25,7 +27,7 @@ fn main() {
             for cd in todo.cd {
                 match set_current_dir(cd.as_os_str()) {
                     Err(err) => {
-                        eprintln!("chdir(2): {}", err);
+                        println!("☯️ chdir(2): {}", err);
                         exit(3);
                     }
                     Ok(_) => {}
@@ -80,7 +82,14 @@ fn main() {
                 }
             }
 
-            // TODO
+            print!("{}", check);
+
+            if check.state() != State::Ok {
+                show_out("STDOUT", stdout);
+                show_out("STDERR", stderr);
+            }
+
+            exit(check.state() as i32);
         }
     }
 }
@@ -112,4 +121,18 @@ fn handle_matcher(
             max: None,
         },
     );
+}
+
+fn show_out(h1: &str, data: Vec<u8>) {
+    println!();
+    println!("{}", h1);
+    println!("======");
+    println!();
+
+    match io::stdout().write(data.as_ref()) {
+        Ok(_) => {}
+        Err(err) => {
+            panic!("failed printing to stdout: {err}");
+        }
+    }
 }

@@ -1,6 +1,8 @@
 use crate::cli::{ExpectedArg, ParseArgsError};
 
 pub(crate) fn blame_user(err: ParseArgsError, consumed: usize) {
+    eprint!("☯️ ");
+
     match err {
         ParseArgsError::UnexpectedEnd(ea) => {
             eprintln!(

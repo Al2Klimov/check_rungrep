@@ -20,7 +20,7 @@ pub(crate) fn run_cmd(
 
     match cmd.spawn() {
         Err(err) => {
-            eprintln!("exec(3): {}", err);
+            println!("☯️ exec(3): {}", err);
             exit(3);
         }
         Ok(mut child) => {
@@ -42,14 +42,14 @@ pub(crate) fn run_cmd(
 
             match child.wait_with_output() {
                 Err(err) => {
-                    eprintln!("waitpid(2): {}", err);
+                    println!("☯️ waitpid(2): {}", err);
                     exit(3);
                 }
                 Ok(result) => {
                     let end = Instant::now();
                     match result.status.code() {
                         None => {
-                            eprintln!("waitpid(2): child was killed");
+                            println!("☯️ waitpid(2): child was killed");
                             exit(3);
                         }
                         Some(code) => (result.stdout, result.stderr, code, end - start),
