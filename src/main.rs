@@ -1,9 +1,10 @@
 mod arg_parser;
 mod cli;
 mod cnt_iter;
+mod process;
 mod usage;
 
-use std::env::{args_os, set_current_dir};
+use std::env::{args_os, set_current_dir, var_os};
 use std::process::exit;
 
 fn main() {
@@ -25,6 +26,11 @@ fn main() {
             }
 
             // TODO
+            process::run_cmd(
+                todo.exe,
+                todo.args,
+                var_os("CHECK_RUNGREP_STDIN").filter(|s| !s.is_empty()),
+            );
         }
     }
 }
