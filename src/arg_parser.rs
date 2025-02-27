@@ -1,5 +1,6 @@
-use crate::cli::{Args, Condition, ExpectedArg, Matcher, ParseArgsError, Perfdata};
+use crate::cli::{Args, Condition, ExpectedArg, Matcher, ParseArgsError};
 use crate::cnt_iter::CounterIterator;
+use crate::plugin::{Perfdat, Thresholds};
 use nagios_range::NagiosRange;
 use regex::bytes::Regex;
 use std::ffi::OsString;
@@ -69,10 +70,12 @@ fn parse_matcher(args: &mut dyn Iterator<Item = OsString>) -> Result<Matcher, Pa
     }
 }
 
-fn parse_perfdata(args: &mut dyn Iterator<Item = OsString>) -> Result<Perfdata, ParseArgsError> {
-    Ok(Perfdata {
-        warn: require_threshold(args.next(), ExpectedArg::Warning)?,
-        crit: require_threshold(args.next(), ExpectedArg::Critical)?,
+fn parse_perfdata(args: &mut dyn Iterator<Item = OsString>) -> Result<Perfdat, ParseArgsError> {
+    Ok(Perfdat {
+        thresholds: Thresholds {
+            warn: require_threshold(args.next(), ExpectedArg::Warning)?,
+            crit: require_threshold(args.next(), ExpectedArg::Critical)?,
+        },
         label: require_utf8(args.next(), ExpectedArg::Label)?,
     })
 }

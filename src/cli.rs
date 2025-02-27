@@ -1,4 +1,4 @@
-use nagios_range::NagiosRange;
+use crate::plugin::Perfdat;
 use regex::bytes::Regex;
 use std::ffi::OsString;
 use std::str::Utf8Error;
@@ -11,21 +11,15 @@ pub(crate) struct Args {
 }
 
 pub(crate) enum Condition {
-    ExecSeconds(Perfdata),
-    ExitCode(Perfdata),
-    Stdout(Matcher, Perfdata),
-    Stderr(Matcher, Perfdata),
+    ExecSeconds(Perfdat),
+    ExitCode(Perfdat),
+    Stdout(Matcher, Perfdat),
+    Stderr(Matcher, Perfdat),
 }
 
 pub(crate) enum Matcher {
     Literal(Vec<u8>),
     RegExp(Regex),
-}
-
-pub(crate) struct Perfdata {
-    pub(crate) warn: Option<NagiosRange>,
-    pub(crate) crit: Option<NagiosRange>,
-    pub(crate) label: String,
 }
 
 pub(crate) enum ParseArgsError {
