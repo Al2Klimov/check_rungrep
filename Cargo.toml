@@ -1,0 +1,13 @@
+[package]
+name = "check_rungrep"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75.0" # Ubuntu 24.04 (+ Debian 13)
+license = "GPL-3.0"
+authors = ["Alexander A. Klimov <a@kli.mov>"]
+
+[dependencies]
+humantime = "2.1.0"
+memchr = "2.7.4"
+nagios-range = "0.2.5"
+regex = "1.11.1"

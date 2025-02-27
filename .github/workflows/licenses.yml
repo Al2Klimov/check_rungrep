@@ -1,0 +1,29 @@
+name: Licenses
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/licenses.yml
+      - Cargo.*
+      - deny.toml
+      - LICENSE.md
+  pull_request:
+    paths:
+      - .github/workflows/licenses.yml
+      - Cargo.*
+      - deny.toml
+      - LICENSE.md
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  Licenses:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: cargo install cargo-deny
+      - uses: actions/checkout@v4
+      - run: cargo deny check licenses
