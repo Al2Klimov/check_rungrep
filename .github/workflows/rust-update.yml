@@ -2,7 +2,7 @@ name: Rust update
 
 on:
   schedule:
-    - cron: '42 23 * * 7'
+    - cron: '42 23 * * 0'
   workflow_dispatch: { }
 
 env:
