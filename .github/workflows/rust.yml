@@ -49,6 +49,7 @@ jobs:
 
           # Fedora 40
           # Fedora 41
+          # Debian 13
           # openSUSE 15.6
           - '1.85'
 
