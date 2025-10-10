@@ -42,6 +42,12 @@ jobs:
           # Debian 13
           - '1.85'
 
+          - '1.86'
+          - '1.87'
+          - '1.88'
+          - '1.89'
+          - '1.90'
+
         os:
           - ubuntu-latest
           - macos-latest
