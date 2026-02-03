@@ -10,4 +10,4 @@ authors = ["Alexander A. Klimov <a@kli.mov>"]
 humantime = "2.3.0"
 memchr = "2.7.6"
 nagios-range = "0.2.5"
-regex = "1.12.2"
+regex = "1.12.3"
