@@ -8,6 +8,6 @@ authors = ["Alexander A. Klimov <a@kli.mov>"]
 
 [dependencies]
 humantime = "2.3.0"
-memchr = "2.7.6"
+memchr = "2.8.0"
 nagios-range = "0.2.5"
 regex = "1.12.3"
