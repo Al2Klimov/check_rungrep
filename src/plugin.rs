@@ -169,13 +169,16 @@ mod tests {
     #[test]
     fn test_check_add_no_thresholds_stays_ok() {
         let mut check = Check::new();
-        check.add(Box::new("alert"), Perfdata {
-            value: 5.0,
-            uom: "",
-            thresholds: no_thresholds(),
-            min: None,
-            max: None,
-        });
+        check.add(
+            Box::new("alert"),
+            Perfdata {
+                value: 5.0,
+                uom: "",
+                thresholds: no_thresholds(),
+                min: None,
+                max: None,
+            },
+        );
         assert!(check.state() == State::Ok);
     }
 
@@ -183,61 +186,76 @@ mod tests {
     fn test_check_add_warn_threshold_triggers_warning() {
         let mut check = Check::new();
         // @0:10 alerts when value is inside [0, 10]; value 5.0 triggers
-        check.add(Box::new("alert"), Perfdata {
-            value: 5.0,
-            uom: "",
-            thresholds: warn_threshold("@0:10"),
-            min: None,
-            max: None,
-        });
+        check.add(
+            Box::new("alert"),
+            Perfdata {
+                value: 5.0,
+                uom: "",
+                thresholds: warn_threshold("@0:10"),
+                min: None,
+                max: None,
+            },
+        );
         assert!(check.state() == State::Warning);
     }
 
     #[test]
     fn test_check_add_crit_threshold_triggers_critical() {
         let mut check = Check::new();
-        check.add(Box::new("alert"), Perfdata {
-            value: 5.0,
-            uom: "",
-            thresholds: crit_threshold("@0:10"),
-            min: None,
-            max: None,
-        });
+        check.add(
+            Box::new("alert"),
+            Perfdata {
+                value: 5.0,
+                uom: "",
+                thresholds: crit_threshold("@0:10"),
+                min: None,
+                max: None,
+            },
+        );
         assert!(check.state() == State::Critical);
     }
 
     #[test]
     fn test_check_state_is_worst_of_all_added() {
         let mut check = Check::new();
-        check.add(Box::new("warn alert"), Perfdata {
-            value: 5.0,
-            uom: "",
-            thresholds: warn_threshold("@0:10"),
-            min: None,
-            max: None,
-        });
+        check.add(
+            Box::new("warn alert"),
+            Perfdata {
+                value: 5.0,
+                uom: "",
+                thresholds: warn_threshold("@0:10"),
+                min: None,
+                max: None,
+            },
+        );
         assert!(check.state() == State::Warning);
 
-        check.add(Box::new("crit alert"), Perfdata {
-            value: 5.0,
-            uom: "",
-            thresholds: crit_threshold("@0:10"),
-            min: None,
-            max: None,
-        });
+        check.add(
+            Box::new("crit alert"),
+            Perfdata {
+                value: 5.0,
+                uom: "",
+                thresholds: crit_threshold("@0:10"),
+                min: None,
+                max: None,
+            },
+        );
         assert!(check.state() == State::Critical);
     }
 
     #[test]
     fn test_check_display_ok_emoji() {
         let mut check = Check::new();
-        check.add(Box::new("everything fine"), Perfdata {
-            value: 5.0,
-            uom: "",
-            thresholds: no_thresholds(),
-            min: None,
-            max: None,
-        });
+        check.add(
+            Box::new("everything fine"),
+            Perfdata {
+                value: 5.0,
+                uom: "",
+                thresholds: no_thresholds(),
+                min: None,
+                max: None,
+            },
+        );
         let s = check.to_string();
         assert!(s.contains("✅"));
         assert!(s.contains("everything fine"));
@@ -246,13 +264,16 @@ mod tests {
     #[test]
     fn test_check_display_warning_emoji() {
         let mut check = Check::new();
-        check.add(Box::new("something off"), Perfdata {
-            value: 5.0,
-            uom: "",
-            thresholds: warn_threshold("@0:10"),
-            min: None,
-            max: None,
-        });
+        check.add(
+            Box::new("something off"),
+            Perfdata {
+                value: 5.0,
+                uom: "",
+                thresholds: warn_threshold("@0:10"),
+                min: None,
+                max: None,
+            },
+        );
         let s = check.to_string();
         assert!(s.contains("⚠️"));
         assert!(s.contains("something off"));
@@ -261,13 +282,16 @@ mod tests {
     #[test]
     fn test_check_display_critical_emoji() {
         let mut check = Check::new();
-        check.add(Box::new("bad things"), Perfdata {
-            value: 5.0,
-            uom: "",
-            thresholds: crit_threshold("@0:10"),
-            min: None,
-            max: None,
-        });
+        check.add(
+            Box::new("bad things"),
+            Perfdata {
+                value: 5.0,
+                uom: "",
+                thresholds: crit_threshold("@0:10"),
+                min: None,
+                max: None,
+            },
+        );
         let s = check.to_string();
         assert!(s.contains("🚨"));
         assert!(s.contains("bad things"));
@@ -276,16 +300,22 @@ mod tests {
     #[test]
     fn test_check_display_perfdata_included_when_label_nonempty() {
         let mut check = Check::new();
-        check.add(Box::new("alert"), Perfdata {
-            value: 42.0,
-            uom: "s",
-            thresholds: Perfdat {
-                thresholds: Thresholds { warn: None, crit: None },
-                label: String::from("exec_time"),
+        check.add(
+            Box::new("alert"),
+            Perfdata {
+                value: 42.0,
+                uom: "s",
+                thresholds: Perfdat {
+                    thresholds: Thresholds {
+                        warn: None,
+                        crit: None,
+                    },
+                    label: String::from("exec_time"),
+                },
+                min: Some(0.0),
+                max: None,
             },
-            min: Some(0.0),
-            max: None,
-        });
+        );
         let s = check.to_string();
         assert!(s.contains("exec_time"));
         assert!(s.contains("42"));
@@ -295,13 +325,16 @@ mod tests {
     #[test]
     fn test_check_display_no_perfdata_when_label_empty() {
         let mut check = Check::new();
-        check.add(Box::new("alert"), Perfdata {
-            value: 42.0,
-            uom: "s",
-            thresholds: no_thresholds(),
-            min: None,
-            max: None,
-        });
+        check.add(
+            Box::new("alert"),
+            Perfdata {
+                value: 42.0,
+                uom: "s",
+                thresholds: no_thresholds(),
+                min: None,
+                max: None,
+            },
+        );
         let s = check.to_string();
         assert!(!s.contains('|'));
     }

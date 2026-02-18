@@ -150,8 +150,7 @@ mod tests {
 
     #[test]
     fn test_command_with_args() {
-        let (_, result, _) =
-            parse_cmdline(args(vec!["prog", "command", "exe", "arg1", "arg2"]));
+        let (_, result, _) = parse_cmdline(args(vec!["prog", "command", "exe", "arg1", "arg2"]));
         let parsed = unwrap_args(result);
         assert_eq!(parsed.exe, OsString::from("exe"));
         assert_eq!(
@@ -162,8 +161,7 @@ mod tests {
 
     #[test]
     fn test_cd_option() {
-        let (_, result, _) =
-            parse_cmdline(args(vec!["prog", "cd", "/tmp", "command", "exe"]));
+        let (_, result, _) = parse_cmdline(args(vec!["prog", "cd", "/tmp", "command", "exe"]));
         let parsed = unwrap_args(result);
         assert_eq!(parsed.cd, vec![OsString::from("/tmp")]);
     }
@@ -188,7 +186,13 @@ mod tests {
     #[test]
     fn test_exit_condition() {
         let (_, result, _) = parse_cmdline(args(vec![
-            "prog", "exit", "", "", "exitlabel", "command", "exe",
+            "prog",
+            "exit",
+            "",
+            "",
+            "exitlabel",
+            "command",
+            "exe",
         ]));
         let parsed = unwrap_args(result);
         assert_eq!(parsed.conditions.len(), 1);
@@ -266,7 +270,13 @@ mod tests {
     #[test]
     fn test_error_bad_threshold() {
         let (_, result, _) = parse_cmdline(args(vec![
-            "prog", "exit", "not_a_range", "", "", "command", "exe",
+            "prog",
+            "exit",
+            "not_a_range",
+            "",
+            "",
+            "command",
+            "exe",
         ]));
         assert!(matches!(
             result,
@@ -277,7 +287,15 @@ mod tests {
     #[test]
     fn test_error_unknown_matcher() {
         let (_, result, _) = parse_cmdline(args(vec![
-            "prog", "stdout", "substring", "pattern", "", "", "", "command", "exe",
+            "prog",
+            "stdout",
+            "substring",
+            "pattern",
+            "",
+            "",
+            "",
+            "command",
+            "exe",
         ]));
         assert!(matches!(result, Err(ParseArgsError::UnknownMatcher)));
     }
@@ -285,8 +303,7 @@ mod tests {
     #[test]
     fn test_consumed_count_reflects_args_iterated() {
         // 3 items consumed after program name: "command", "exe", "arg1"
-        let (_, _, consumed) =
-            parse_cmdline(args(vec!["prog", "command", "exe", "arg1"]));
+        let (_, _, consumed) = parse_cmdline(args(vec!["prog", "command", "exe", "arg1"]));
         assert_eq!(consumed, 3);
     }
 }

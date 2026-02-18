@@ -77,7 +77,10 @@ mod tests {
     use std::time::Duration;
 
     fn no_thresholds() -> Thresholds {
-        Thresholds { warn: None, crit: None }
+        Thresholds {
+            warn: None,
+            crit: None,
+        }
     }
 
     #[test]
