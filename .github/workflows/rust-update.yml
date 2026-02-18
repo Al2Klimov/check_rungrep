@@ -34,3 +34,6 @@ jobs:
 
       - run: cargo build --verbose
         shell: bash
+
+      - run: cargo test --verbose
+        shell: bash
