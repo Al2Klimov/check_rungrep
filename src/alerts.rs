@@ -69,6 +69,94 @@ impl Display for Matches {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::plugin::Thresholds;
+    use regex::bytes::Regex;
+    use std::time::Duration;
+
+    fn no_thresholds() -> Thresholds {
+        Thresholds { warn: None, crit: None }
+    }
+
+    #[test]
+    fn test_exec_time_display_contains_seconds_and_description() {
+        let et = ExecTime {
+            time: Duration::from_secs(2),
+            thresholds: no_thresholds(),
+        };
+        let s = et.to_string();
+        assert!(s.contains("Command ran for"));
+        assert!(s.contains("2"));
+    }
+
+    #[test]
+    fn test_exit_code_display_contains_code() {
+        let ec = ExitCode {
+            code: 42,
+            thresholds: no_thresholds(),
+        };
+        let s = ec.to_string();
+        assert!(s.contains("Command returned"));
+        assert!(s.contains("42"));
+    }
+
+    #[test]
+    fn test_exit_code_zero_display() {
+        let ec = ExitCode {
+            code: 0,
+            thresholds: no_thresholds(),
+        };
+        let s = ec.to_string();
+        assert!(s.contains("Command returned"));
+        assert!(s.contains("0"));
+    }
+
+    #[test]
+    fn test_matches_literal_display() {
+        let m = Matches {
+            source: "stdout",
+            matcher: Matcher::Literal(b"hello".to_vec()),
+            times: 3,
+            thresholds: no_thresholds(),
+        };
+        let s = m.to_string();
+        assert!(s.contains("stdout"));
+        assert!(s.contains("3"));
+        assert!(s.contains("hello"));
+        assert!(s.contains("Literal string"));
+    }
+
+    #[test]
+    fn test_matches_regex_display() {
+        let m = Matches {
+            source: "stderr",
+            matcher: Matcher::RegExp(Regex::new("foo.*bar").unwrap()),
+            times: 1,
+            thresholds: no_thresholds(),
+        };
+        let s = m.to_string();
+        assert!(s.contains("stderr"));
+        assert!(s.contains("1"));
+        assert!(s.contains("foo.*bar"));
+        assert!(s.contains("Regular expression"));
+    }
+
+    #[test]
+    fn test_matches_zero_times_display() {
+        let m = Matches {
+            source: "stdout",
+            matcher: Matcher::Literal(b"needle".to_vec()),
+            times: 0,
+            thresholds: no_thresholds(),
+        };
+        let s = m.to_string();
+        assert!(s.contains("0"));
+        assert!(s.contains("needle"));
+    }
+}
+
 struct AlertThresholds {
     thresholds: Thresholds,
 }
