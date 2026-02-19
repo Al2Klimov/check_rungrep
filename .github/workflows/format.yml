@@ -7,10 +7,12 @@ on:
     paths:
       - .github/workflows/format.yml
       - src/**
+      - tests/**
   pull_request:
     paths:
       - .github/workflows/format.yml
       - src/**
+      - tests/**
 
 env:
   CARGO_TERM_COLOR: always

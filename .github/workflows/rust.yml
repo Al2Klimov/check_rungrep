@@ -8,11 +8,13 @@ on:
       - .github/workflows/rust.yml
       - Cargo.*
       - src/**
+      - tests/**
   pull_request:
     paths:
       - .github/workflows/rust.yml
       - Cargo.*
       - src/**
+      - tests/**
   workflow_dispatch: { }
 
 env:
