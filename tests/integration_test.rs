@@ -234,14 +234,15 @@ fn test_time_condition_with_label() {
 /// `CHECK_RUNGREP_STDIN` env var: the value is piped to the command's stdin.
 #[test]
 fn test_stdin_env_var() {
+    let (shell, flag) = sh();
     #[cfg(unix)]
-    let stdin_exe = "cat";
+    let script = "cat";
     #[cfg(windows)]
-    let stdin_exe = "more";
+    let script = "more";
     let output = check_rungrep()
         .env("CHECK_RUNGREP_STDIN", "hello")
         .args([
-            "stdout", "literal", "hello", "", "1:1", "", "command", stdin_exe,
+            "stdout", "literal", "hello", "", "1:1", "", "command", shell, flag, script,
         ])
         .output()
         .unwrap();
