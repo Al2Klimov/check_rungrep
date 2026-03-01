@@ -25,31 +25,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust:
-          # Ubuntu 20.04
-          # Ubuntu 22.04
-          # Ubuntu 24.04
-          - 1.75.0
-
-          - '1.76'
-          - '1.77'
-          - '1.78'
-          - '1.79'
-          - '1.80'
-          - '1.81'
-          - '1.82'
-          - '1.83'
-          - '1.84'
-
-          # Debian 13
-          - '1.85'
-
-          - '1.86'
-          - '1.87'
-          - '1.88'
-          - '1.89'
-          - '1.90'
-
         os:
           - ubuntu-latest
           - macos-latest
@@ -58,11 +33,15 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - uses: actions/checkout@v4
+
+      - id: rust-version
+        run: echo "value=$(grep '^rust-version' Cargo.toml | sed 's/.*\"\([^\"]*\)\".*/\1/')" >> "$GITHUB_OUTPUT"
+        shell: bash
+
       - uses: dtolnay/rust-toolchain@v1
         with:
-          toolchain: ${{ matrix.rust }}
-
-      - uses: actions/checkout@v4
+          toolchain: ${{ steps.rust-version.outputs.value }}
 
       - run: cargo build --verbose
         shell: bash
